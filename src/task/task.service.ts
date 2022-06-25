@@ -59,18 +59,25 @@ export class TaskService {
 
   async createTask(createtaskdto: CreateTaskDto, user: User): Promise<Task> {
     const { title, description } = createtaskdto;
-    const task: Task = {
-      title,
-      description,
-      status: TaskStatus.OPEN,
-    };
-
-    const TaskObj = new this.taskModel(task);
-    console.log(TaskObj);
-    await this.userModel.findByIdAndUpdate(user._id, {
-      $push: { tasks: TaskObj._id },
-    });
-    return TaskObj.save();
+    if (createtaskdto?._id) {
+      await this.taskModel.findByIdAndUpdate(createtaskdto._id, {
+        title,
+        description,
+        status: createtaskdto.status,
+      });
+      return this.taskModel.findById(createtaskdto._id);
+    } else {
+      const task: Task = {
+        title,
+        description,
+        status: TaskStatus.OPEN,
+      };
+      const TaskObj = new this.taskModel(task);
+      await this.userModel.findByIdAndUpdate(user._id, {
+        $push: { tasks: TaskObj._id },
+      });
+      return TaskObj.save();
+    }
   }
 
   async deleteTask(id: string, user: User): Promise<any> {

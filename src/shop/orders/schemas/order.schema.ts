@@ -2,9 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { Cart } from '../../carts/schemas/cart.schema';
-import { Address } from '../../../user/schemas/address.schema';
 import { ShippingMethod } from './shippingMethod.schema';
 import { User } from 'src/auth/schemas/user.schema';
+import { Address } from './address.schema';
+import { Contact } from './contacts.schema';
 export type OrderDocument = Order & Document;
 @Schema()
 export class Order {
@@ -22,6 +23,9 @@ export class Order {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   userId: User;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Contact' })
+  contactId: Contact;
 
   @Prop()
   discount: number;

@@ -16,6 +16,8 @@ export class CartsService {
     @InjectModel(CartItem.name) private cartItemModel: Model<CartItemDocument>,
   ) {}
 
+  async getCartTotal(user: User) {}
+
   async getCartItems(user: User): Promise<Array<Product>> {
     const res = await this.cartItemModel.aggregate([
       { $match: { cartId: user.cartId } },
@@ -68,15 +70,29 @@ export class CartsService {
     return await this.cartModel.findById(user.cartId);
   }
 
-  async updateQuantity(updateQuantityPayload:UpdateCartItemQuantityDto):Promise<CartItem>{
-    const { cartItemId,quantity} = updateQuantityPayload;
-      const response = await this.cartItemModel.findByIdAndUpdate(cartItemId, {quantity:quantity});
-      return response;
+  async updateQuantity(
+    updateQuantityPayload: UpdateCartItemQuantityDto,
+  ): Promise<CartItem> {
+    const { cartItemId, quantity } = updateQuantityPayload;
+    const response = await this.cartItemModel.findByIdAndUpdate(cartItemId, {
+      quantity: quantity,
+    });
+    return response;
   }
 
-  async removeFromCart(user:User,cartItemId:string):Promise<CartItem>{
-    await this.cartModel.updateOne({_id:user.cartId},{$pull:{products:cartItemId}});
+  async removeFromCart(user: User, cartItemId: string): Promise<CartItem> {
+    await this.cartModel.updateOne(
+      { _id: user.cartId },
+      { $pull: { products: cartItemId } },
+    );
     const response = await this.cartItemModel.findByIdAndDelete(cartItemId);
     return response;
+  }
+
+  async assignNewCartToUser(user: User) {
+    const cartDoc = new this.cartModel({ products: [] });
+    const doc = await cartDoc.save();
+    const _id = user._id;
+    return this.userModel.findByIdAndUpdate(_id, { cartId: doc._id });
   }
 }

@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { SkillModule } from './skill/skill.module';
 import { UserModule } from './user/user.module';
 import { ShopModule } from './shop/shop.module';
+import { FileUploaderService } from './file-uploader/file-uploader.service';
 @Module({
   imports: [
     BlogsModule,
@@ -23,6 +24,6 @@ import { ShopModule } from './shop/shop.module';
     ShopModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, FileUploaderService],
 })
 export class AppModule {}

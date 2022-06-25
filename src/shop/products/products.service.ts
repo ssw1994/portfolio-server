@@ -29,12 +29,18 @@ export class ProductsService {
         product_price,
         about_product,
         category,
+        colors,
+        images,
+        stock_quantity,
       } = productDto;
       const product = new this.productModel({
         product_name,
         product_price,
         about_product,
         category,
+        colors,
+        images,
+        stock_quantity,
       });
       product.save();
       return product;

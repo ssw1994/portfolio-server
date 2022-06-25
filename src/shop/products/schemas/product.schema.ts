@@ -33,6 +33,9 @@ export class Product {
 
   @Prop()
   colors: string[];
+
+  @Prop()
+  stock_quantity: number;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
